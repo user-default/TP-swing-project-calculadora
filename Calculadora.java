@@ -3,7 +3,6 @@ package calculadora;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -12,14 +11,17 @@ import javax.swing.JTextField;
 
 public class Calculadora implements ActionListener {
 	
+	private static JTextField show = new JTextField(14);
+	
 	public static void main(String[] args) {
 		JFrame f = new JFrame();
 		JPanel p = new JPanel();
-		Calculadora calculadora = new Layout();
+		Calculadora calculadora = new Calculadora();
+		
+		f.setResizable(false);
 		f.setTitle("Calculadora");
-		f.setSize(300, 200);
-		f.setLocation(500, 300);
-		Componentes(f, calculadora, p);
+		f.setSize(180, 240);
+		Componentes(f, calculadora, p, show);
 		f.add(p);
 		f.setVisible(true);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -27,10 +29,9 @@ public class Calculadora implements ActionListener {
 		
 		
 	}
-	public static void Componentes(JFrame f ,Calculadora calculadora, JPanel p) {
+	public static void Componentes(JFrame f ,Calculadora calculadora, JPanel p, JTextField show) {
 		
-		JTextField show = new JTextField(30);
-		show.setEditable(false);
+
 		JButton button0 = new JButton("0");
 		JButton button1 = new JButton("1");
 		JButton button2 = new JButton("2");
@@ -47,10 +48,11 @@ public class Calculadora implements ActionListener {
 		JButton buttonVezes = new JButton("*");
 		JButton buttonDiv = new JButton("/");
 		JButton buttonResult = new JButton("=");
-		JButton buttonClear = new JButton("CE");
+		JButton buttonClear = new JButton("C");
 		
+		show.setEditable(false);
 		p.add(BorderLayout.NORTH, show);
-		p.add(BorderLayout.CENTER, button0);
+		p.add(BorderLayout.SOUTH, button0);
 		p.add(BorderLayout.CENTER, button1);
 		p.add(BorderLayout.CENTER, button2);
 		p.add(BorderLayout.CENTER, button3);
@@ -85,8 +87,59 @@ public class Calculadora implements ActionListener {
 		buttonClear.addActionListener(calculadora);		
 		
 	}
-	@Override
+	
 	public void actionPerformed(ActionEvent e) {
+		String acao = e.getActionCommand();
+		
+		if(acao.charAt(0) == 'C'){
+			show.setText("");
+		}
+		else if(acao.charAt(0) == '=') {
+			show.setText(operacao(show.getText()));
+		}
+		else {
+			show.setText(show.getText() + acao);
+		}
+			
+			
+	}
+	public static String operacao(String a) {
+		String operador = "";
+		String num1 = "";
+		String num2 = "";
+		double resultado = 0;
+		char[] lista = a.toCharArray();
+		for(int i = 0; i < lista.length; i++) {
+			if (lista[i] >= '0' && lista[i] <= '9' || lista[i] == '.') {
+				if(operador.isEmpty()) {
+					num1 += lista[i];
+				}
+				else
+					num2 += lista[i];
+			}
+		if(lista[i] == '+' || lista[i] == '-' || lista[i] == '/' || lista[i] == '*') {
+			operador += lista[i];
+		}
+	
+		}
+		if(operador.equals("+")) {
+			resultado = (Double.parseDouble(num1) + Double.parseDouble(num2)); 
+		}
+		else if(operador.equals("-")) {
+			resultado = (Double.parseDouble(num1) - Double.parseDouble(num2)); 
+		}
+		else if(operador.equals("*")) {
+			resultado = (Double.parseDouble(num1) * Double.parseDouble(num2)); 
+		}
+		else if(operador.equals("/")) {
+			resultado = (Double.parseDouble(num1) / Double.parseDouble(num2)); 
+		}
+		else
+			resultado = 0;
+		
+		
+		return "" +resultado;
+		
 	}
 
 }
